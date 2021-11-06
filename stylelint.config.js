@@ -3,7 +3,23 @@ module.exports = {
     'stylelint-config-standard',
     'stylelint-config-prettier'
   ],
+  plugins: ['stylelint-scss'],
   // add your custom config here
   // https://stylelint.io/user-guide/configuration
-  rules: {}
+  rules: {
+    'at-rule-no-unknown': null,
+    'scss/at-rule-no-unknown': true,
+    'selector-pseudo-element-no-unknown': [
+      true,
+      {
+        ignorePseudoElements: ['v-deep']
+      }
+    ],
+    "font-family-no-missing-generic-family-keyword": [
+      true,
+      {
+        "ignoreFontFamilies": ["icomoon"]
+      }
+    ]
+  },
 }

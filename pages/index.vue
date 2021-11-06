@@ -1,7 +1,18 @@
 <template>
-  <Tutorial/>
+  <desktop />
 </template>
 
 <script>
-export default {}
+import Desktop from '~/components/desktop/home'
+
+export default {
+  components: {
+    Desktop
+  },
+  data() {
+    return {
+      test: ''
+    }
+  }
+}
 </script>
