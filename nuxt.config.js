@@ -10,6 +10,9 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script: [
+      { hid: 'spotify', src: 'https://sdk.scdn.co/spotify-player.js', defer: true }
     ]
   },
 

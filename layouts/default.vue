@@ -27,8 +27,23 @@ export default {
     this.$nextTick(() => {
       document.querySelector('.layout__view').addEventListener('scroll', this.handleScroll)
     })
+    this.$store.dispatch('player/initPlayer')
+    this.initAuth()
   },
   methods: {
+    initAuth () {
+      this.$store.dispatch('auth/initAuth')
+      console.log('this.$route.hash', this.$route.hash.split('&'))
+      const a = this.$route.hash.split('&').reduce(function(obj, str, index) {
+        const strParts = str.split("=");
+        console.log('strParts', strParts)
+        if (strParts[0] && strParts[1]) {
+          obj[strParts[0].replace(/\s+/g, '')] = strParts[1].trim();
+        }
+        return obj;
+      }, {});
+      console.log('a', a)
+    },
     handleScroll () {
       const scrollTop = document.querySelector('.layout__view').scrollTop
       if (scrollTop === 0) {
