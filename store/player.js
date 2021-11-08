@@ -1,5 +1,5 @@
 export const actions = {
-  async initPlayer({commit, dispatch, getters}) {
+  async initPlayer({commit, dispatch, getters}, token) {
     if (getters['auth/isLoggedIn']) {
       window.onSpotifyWebPlaybackSDKReady = () => {
       };
@@ -10,7 +10,7 @@ export const actions = {
       name: 'spotify',
       volume: 1,
       getOAuthToken: (callback) => {
-        callback();
+        callback(token);
       },
     });
 
