@@ -6,19 +6,20 @@ export const state = () => ({
   expiresIn: 3600,
   tokenType: 'Bearer',
   isRefreshing: false,
-  isLoggedIn: false,
   isPremium: false,
   user: null
 })
 export const getters = {
   isLoggedIn (state) {
+    console.log('state.accessToken', state.accessToken)
     return state.accessToken !== ''
-      && state.user != null
   }
 }
+
 export const mutations = {
   setAccessToken (state, payload) {
     state.accessToken = payload
+    this.$cookies.set('access_token', payload)
   },
   setTokenType (state, payload) {
     state.tokenType = payload
@@ -44,7 +45,6 @@ export const actions = {
       commit('setTokenType', tokenType)
       commit('setAccessToken', accessToken)
       commit('setExpiresIn', expiresIn)
-
       const user = await this.$userApi.getMe()
       commit('setUser', user)
       this.$router.push('/')

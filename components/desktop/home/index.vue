@@ -2,22 +2,29 @@
   <div class="home">
     <div class="home__container">
       <s-greeting />
-      <s-layout-container>
-        <s-media v-for="i in 6" :key="i" />
-      </s-layout-container>
+      <s-media-player
+        header="Recently played"
+        :play-list="recentlyPlayedList"
+      />
     </div>
   </div>
 </template>
 <script>
 import SGreeting from '~/components/desktop/home/greeting'
-import SLayoutContainer from '~/components/shared/ui/layout-container'
-import SMedia from '~/components/shared/ui/media'
+import SMediaPlayer from '~/components/shared/molecules/player-media'
 
 export default {
   components: {
     SGreeting,
-    SLayoutContainer,
-    SMedia
+    SMediaPlayer
+  },
+  async fetch() {
+    await this.$store.dispatch('player/getRecentlyPlayedAction')
+  },
+  computed: {
+    recentlyPlayedList () {
+      return this.$store.state.player.recentlyPlayedList
+    }
   }
 }
 </script>

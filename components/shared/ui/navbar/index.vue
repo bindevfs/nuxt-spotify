@@ -37,6 +37,18 @@ export default {
           title: 'Your Library',
           icon: 'library',
           link: '/library'
+        },
+        {
+          id: 4,
+          title: 'Browse All',
+          icon: 'library',
+          link: '/browse'
+        },
+        {
+          id: 5,
+          title: 'Artist',
+          icon: 'library',
+          link: '/artist/5dfZ5uSmzR7VQK0udbAVpf'
         }
       ]
     }

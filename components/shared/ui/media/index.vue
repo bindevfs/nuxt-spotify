@@ -2,7 +2,7 @@
   <div class="media">
     <div class="media__container">
       <div class="media__cover">
-        <s-media-thumbnail />
+        <s-media-thumbnail :src-image="imagePath" :alt="name"/>
         <div class="media__play">
           <s-play-button />
         </div>
@@ -10,11 +10,21 @@
       <div class="media__content">
         <a class="media__song-name" href="javascript:void(0)">
           <div class="media__song-name_text">
-            V-Pop Không Thể Thiếu
+            {{ name }}
           </div>
         </a>
-        <div class="media__desc">
-          Đông tới Tây, đây là những ca khúc thịnh hành nhất ở Việt Nam. Ảnh bìa: Low G, Thắng
+        <div v-if="isTypePlayList" class="media__desc" v-html="contents"></div>
+        <div v-else class="media__desc">
+          <template v-for="(artist, index) in artists">
+            <nuxt-link
+              :key="artist.id"
+              :to="`/artist/${artist.id}`">
+              {{ artist.name }}
+            </nuxt-link>
+            <span v-if="index < artists.length - 1" :key="artist.id" class="comma">
+              &#44;
+            </span>
+          </template>
         </div>
       </div>
     </div>
@@ -28,6 +38,41 @@ export default {
   components: {
     SMediaThumbnail,
     SPlayButton
+  },
+  props: {
+    item: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  computed: {
+    media () {
+      return this.item?.track ? this.item?.track : this.item
+    },
+    name () {
+      return this.media?.name || ''
+    },
+    isTypePlayList () {
+      return this.media.type === 'playlist'
+    },
+    contents () {
+      if (this.media.type === 'playlist') {
+        return this.media.description
+      }
+      return this.media?.artists
+    },
+    artists () {
+      return this.media?.artists
+    },
+    imagePath () {
+      if (this.media.type === 'playlist') {
+        return this.media?.images[0]?.url || ''
+      }
+      return this.media?.album?.images[0]?.url || ''
+    }
+  },
+  mounted() {
+    console.log(this.item)
   }
 }
 </script>
@@ -40,6 +85,7 @@ export default {
     border-radius: 4px;
     position: relative;
     width: 100%;
+    height: 100%;
     transition: background-color 0.3s ease;
     &:hover {
       background-color: #282828;
@@ -78,6 +124,10 @@ export default {
     line-height: 16px;
     text-transform: none;
     color: #b3b3b3;
+    .comma {
+      letter-spacing: 1px;
+      margin-left: -4px;
+    }
     @include clamp-text(2);
     a {
       position: relative;

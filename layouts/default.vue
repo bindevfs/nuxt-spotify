@@ -3,7 +3,7 @@
     <div class="layout__container">
       <s-top-bar />
       <div class="layout__view">
-        <div class="layout__sticky-top-scroll"></div>
+        <div v-show="visibleStickyTop" class="layout__sticky-top-scroll"></div>
         <div class="layout__bg-linear"></div>
         <nuxt />
       </div>
@@ -23,12 +23,17 @@ export default {
     STopBar,
     SNowPlayingBar
   },
+  computed: {
+    visibleStickyTop () {
+      return this.$route.name !== 'artist-id'
+    }
+  },
   mounted () {
+    this.initAuth()
+    this.$store.dispatch('player/initPlayer', this.$store.state.auth.accessToken)
     this.$nextTick(() => {
       document.querySelector('.layout__view').addEventListener('scroll', this.handleScroll)
     })
-    this.initAuth()
-    this.$store.dispatch('player/initPlayer', this.$store.state.auth.accessToken)
   },
   methods: {
     initAuth () {

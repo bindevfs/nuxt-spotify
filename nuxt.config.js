@@ -26,7 +26,12 @@ export default {
   plugins: [
     '@/plugins/antd-ui',
     '@/plugins/axios',
-    '@/plugins/reponsitory'
+    '@/plugins/reponsitory',
+    '@/plugins/filters',
+    {
+      src: '@/plugins/persisted-state',
+      ssr: false
+    }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -46,7 +51,8 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    '@nuxtjs/style-resources'
+    '@nuxtjs/style-resources',
+    'cookie-universal-nuxt'
   ],
 
   styleResources: {
@@ -73,5 +79,14 @@ export default {
     babel: {
       plugins: [['import', { libraryName: 'ant-design-vue', style: 'css' }]],
     },
-  }
+    transpile: [
+      'lodash-es'
+    ]
+  },
+  router: {
+    scrollBehavior (to, from, savedPosition) {
+      // scroll to top by default
+      return { x: 0, y: 0 }
+    }
+  },
 }

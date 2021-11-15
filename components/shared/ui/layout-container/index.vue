@@ -3,12 +3,15 @@
     <div class="layout-container__wrapper">
       <div class="layout-container__head">
         <h2 class="layout-container__title">
-          <a href="javascript:void(0)" class="layout-container__title-link">
-            Episodes for you
+          <a v-if="isLinkTitle" href="javascript:void(0)" class="layout-container__title-link" @click="$emit('clickTitle')">
+            {{ title }}
           </a>
+          <template v-else>
+            {{ title }}
+          </template>
         </h2>
         <div class="layout-container__view-all">
-          <a href="javascript:void(0)" class="layout-container__link">SEE ALL</a>
+          <a href="javascript:void(0)" class="layout-container__link" @click="$emit('clickAll')">SEE ALL</a>
         </div>
       </div>
       <div class="layout-container__body">
@@ -19,6 +22,30 @@
     </div>
   </div>
 </template>
+<script>
+import { isString } from 'lodash-es'
+
+export default {
+  props: {
+    header: {
+      type: [String, Object],
+      required: true
+    }
+  },
+  computed: {
+    isLinkTitle () {
+      return !isString(this.header)
+    },
+    title () {
+      console.log(this.isLinkTitle)
+      if (!this.isLinkTitle) {
+        return this.header
+      }
+      return this.header?.title?.name || ''
+    }
+  }
+}
+</script>
 <style lang="scss" scoped>
 .layout-container {
   &__wrapper {

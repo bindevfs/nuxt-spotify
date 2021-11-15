@@ -1,8 +1,27 @@
 <template>
   <div class="media-thumbnail">
-    <img class="media-thumbnail__img" src="https://i.scdn.co/image/ab67616d00001e02d814e7bfbbfd8fcfe4c1a08b" alt="Thumb">
+    <img
+      class="media-thumbnail__img"
+      :src="srcImage"
+      :alt="alt"
+      loading="lazy"
+    >
   </div>
 </template>
+<script>
+export default {
+  props: {
+    srcImage: {
+      type: String,
+      default: ''
+    },
+    alt: {
+      type: String,
+      default: ''
+    },
+  }
+}
+</script>
 <style lang="scss" scoped>
 .media-thumbnail {
   position: relative;

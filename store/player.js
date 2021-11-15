@@ -1,6 +1,18 @@
+import { shuffle } from 'lodash-es'
+
+export const state = () => ({
+  recentlyPlayedList: []
+})
+
+export const mutations = {
+  setRecentlyPlayedList (state, payload) {
+    state.recentlyPlayedList = payload
+  }
+}
+
 export const actions = {
-  async initPlayer({commit, dispatch, getters}, token) {
-    if (getters['auth/isLoggedIn']) {
+  async initPlayer({ dispatch, rootState }, token) {
+    if (rootState.auth.isLoggedIn) {
       window.onSpotifyWebPlaybackSDKReady = () => {
       };
       return;
@@ -58,5 +70,13 @@ export const actions = {
         };
       }
     });
+  },
+  async getRecentlyPlayedAction ({commit}) {
+    try {
+      const { items } = await this.$playerApi.getRecentlyPlayed()
+      commit('setRecentlyPlayedList', shuffle(items))
+    } catch (e) {
+      console.error(e)
+    }
   }
 }
