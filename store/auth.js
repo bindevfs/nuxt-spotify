@@ -47,7 +47,7 @@ export const actions = {
       commit('setExpiresIn', expiresIn)
       const user = await this.$userApi.getMe()
       commit('setUser', user)
-      this.$router.push('/')
+      this.$router.replace('/')
     }
   }
 }

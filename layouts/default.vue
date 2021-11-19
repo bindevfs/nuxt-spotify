@@ -15,7 +15,7 @@
 <script>
 import SNavBar from '~/components/shared/ui/navbar'
 import STopBar from '~/components/shared/ui/top-bar'
-import SNowPlayingBar from '~/components/shared/ui/now-playing-bar'
+import SNowPlayingBar from '~/components/shared/molecules/now-playing-bar'
 
 export default {
   components: {

@@ -8,5 +8,8 @@ export default ($axios) => ({
   },
   getArtist (id) {
     return $axios.$get(`artists/${id}`)
+  },
+  getArtistRelated (id) {
+    return $axios.$get(`artists/${id}/related-artists`)
   }
 })

@@ -1,5 +1,5 @@
 <template>
-  <div class="media-thumbnail">
+  <div :class="['media-thumbnail', { 'media-thumbnail--bordered': bordered }]">
     <img
       class="media-thumbnail__img"
       :src="srcImage"
@@ -19,6 +19,10 @@ export default {
       type: String,
       default: ''
     },
+    bordered: {
+      type: Boolean,
+      default: false
+    }
   }
 }
 </script>
@@ -28,6 +32,7 @@ export default {
   width: 100%;
   padding-top: 100%;
   background-color: #333;
+  border-radius: 2px;
   @include box-shadow(0 8px 24px rgba(0, 0, 0, 0.5));
   &__img {
     position: absolute;
@@ -36,7 +41,10 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 2px;
+    border-radius: inherit;
+  }
+  &--bordered {
+    border-radius: 50%;
   }
 }
 </style>

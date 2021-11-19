@@ -37,7 +37,6 @@ export default {
       return !isString(this.header)
     },
     title () {
-      console.log(this.isLinkTitle)
       if (!this.isLinkTitle) {
         return this.header
       }
@@ -81,7 +80,7 @@ export default {
   &__list {
     display: grid;
     grid-gap: 24px;
-    grid-template-columns: repeat(auto-fill,minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill,minmax(196px, 1fr));
   }
 }
 </style>

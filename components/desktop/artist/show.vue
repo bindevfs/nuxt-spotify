@@ -1,22 +1,26 @@
 <template>
   <section class="artist">
-    <div class="artist__container">
-      <div class="artist__head">
+    <div v-if="$fetchState.pending" class="artist__loading">
+      <s-loading-dots />
+    </div>
+    <div v-else class="artist__container">
+      <div class="artist__head" :style="backgroundColorRandomRGB">
         <div class="artist__head-bg"></div>
         <div class="artist__head-contain">
           <div class="artist-thumbnail">
             <div class="artist-thumbnail__wrap-img">
-              <img :src="artistImageUrl" :alt="artist.name">
+              <img id="image" :src="artistImageUrl" :alt="artist.name">
             </div>
           </div>
           <div class="artist-info">
             <div class="artist-info__verified"></div>
             <h1 class="artist-info__name">{{ artist.name }}</h1>
-            <div class="artist-info__listeners">{{ artist.followers.total }} Followers</div>
+            <div class="artist-info__listeners">{{ artistFollowers }} Followers</div>
           </div>
         </div>
       </div>
       <div class="artist__body">
+        <div class="artist__bg-linear" :style="backgroundColorRandomRGB"></div>
         <div class="artist-action">
           <div class="artist-action__play">
             <s-play-button size="64px" :size-icon="32"/>
@@ -28,7 +32,15 @@
           </div>
           <div class="artist-action__more"></div>
         </div>
-        <s-popular-list-song :songs="topTracks"/>
+        <div class="artist__more">
+          <s-popular-list-song :songs="topTracks"/>
+        </div>
+        <div class="artist__more">
+          <s-media-player
+            header="Fans also like"
+            :play-list="artistRelated"
+          />
+        </div>
       </div>
     </div>
   </section>
@@ -36,17 +48,26 @@
 <script>
 import SPlayButton from '~/components/shared/ui/play-button'
 import SPopularListSong from '~/components/desktop/artist/popular-list-song.vue'
+import SMediaPlayer from '~/components/shared/molecules/player-media'
+import { getRandomRgb } from '~/helpers'
+import SLoadingDots from '~/components/shared/ui/loading-dots/index.vue'
 
 export default {
   components: {
     SPlayButton,
-    SPopularListSong
+    SPopularListSong,
+    SMediaPlayer,
+    SLoadingDots
   },
   async fetch() {
-    await this.$store.dispatch('artists/getArtistTopTrackAction', this.$route.params.id)
-    await this.$store.dispatch('artists/getArtistAction', this.$route.params.id)
+    await Promise.all([
+      this.$store.dispatch('artists/getArtistTopTrackAction', this.$route.params.id),
+      this.$store.dispatch('artists/getArtistAction', this.$route.params.id),
+      this.$store.dispatch('artists/getArtistRelatedAction', this.$route.params.id)
+    ])
 
   },
+  fetchDelay: 500,
   computed: {
     topTracks () {
       return this.$store.state.artists.topTracks
@@ -54,19 +75,38 @@ export default {
     artist () {
       return this.$store.state.artists.artist
     },
+    artistRelated () {
+      return this.$store.getters['artists/getTopFiveArtistRelated']
+    },
     artistImageUrl () {
       return this.artist?.images?.[0]?.url
+    },
+    artistFollowers () {
+      return this.artist?.followers?.total || 0
+    },
+    backgroundColorRandomRGB () {
+      return {
+        '--bg-color': getRandomRgb()
+      }
     }
   }
 }
 </script>
 <style lang="scss" scoped>
 .artist {
+  --bg-color: rgb(56, 144, 160);
+  &__loading {
+    background-color: #121212;
+    height: calc(100vh - 92px);
+    width: 100%;
+    display: grid;
+    place-content: center;
+  }
   &__head {
     min-height: 350px;
     max-height: 500px;
     height: 35vh;
-    background-color: rgb(56, 144, 160);
+    background-color: var(--bg-color);
     display: flex;
     align-items: center;
     padding: 1.5rem;
@@ -88,6 +128,21 @@ export default {
   }
   &__body {
     padding: 1.5rem 2rem;
+    position: relative;
+    z-index: 1;
+  }
+  &__bg-linear {
+    background-image: linear-gradient(rgba(0,0,0,.6) 0,#121212 100%);
+    background-color: var(--bg-color);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10vw;
+    z-index: -1;
+  }
+  &__more {
+    margin: 2rem 0;
   }
   .artist-thumbnail {
     width: 17.5vw;

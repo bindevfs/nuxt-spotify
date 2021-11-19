@@ -6,8 +6,9 @@
   >
     <s-media
       v-for="(item, index) in playList"
-      :key="index"
+      :key="`${index}_${item.id}`"
       :item="item"
+      @click="handleClickMedia"
     />
   </s-layout-container>
 </template>
@@ -35,6 +36,11 @@ export default {
     },
     handleClickViewAll () {
       //
+    },
+    handleClickMedia (item) {
+      if (item.type === 'artist') {
+        this.$router.push(`/artist/${item.id}`)
+      }
     }
   }
 }

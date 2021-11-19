@@ -7,3 +7,11 @@ export const getDataAfterHashLocation = (list) => {
     return obj;
   }, {});
 }
+
+export const getRandomRgb = () => {
+  const num = Math.round(0xffffff * Math.random());
+  const reb = num >> 16;
+  const green = num >> 8 & 255;
+  const blue = num & 255;
+  return 'rgb(' + reb + ', ' + green + ', ' + blue + ')';
+}

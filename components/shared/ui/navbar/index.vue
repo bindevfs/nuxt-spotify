@@ -40,15 +40,15 @@ export default {
         },
         {
           id: 4,
-          title: 'Browse All',
+          title: 'Browse',
           icon: 'library',
           link: '/browse'
         },
         {
           id: 5,
-          title: 'Artist',
-          icon: 'library',
-          link: '/artist/5dfZ5uSmzR7VQK0udbAVpf'
+          title: 'Like Songs',
+          icon: 'heart',
+          link: '/collection/track'
         }
       ]
     }

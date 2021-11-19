@@ -1,9 +1,9 @@
 <template>
   <div class="media">
-    <div class="media__container">
+    <div class="media__container" @click="handleClickMedia">
       <div class="media__cover">
-        <s-media-thumbnail :src-image="imagePath" :alt="name"/>
-        <div class="media__play">
+        <s-media-thumbnail :bordered="isTypeArtist" :src-image="imagePath" :alt="name"/>
+        <div class="media__play" @click="handleClickPlay">
           <s-play-button />
         </div>
       </div>
@@ -13,11 +13,11 @@
             {{ name }}
           </div>
         </a>
-        <div v-if="isTypePlayList" class="media__desc" v-html="contents"></div>
+        <div v-if="isNotLink" class="media__desc" v-html="contents"></div>
         <div v-else class="media__desc">
           <template v-for="(artist, index) in artists">
             <nuxt-link
-              :key="artist.id"
+              :key="`${index}_${artist.id}`"
               :to="`/artist/${artist.id}`">
               {{ artist.name }}
             </nuxt-link>
@@ -53,11 +53,20 @@ export default {
       return this.media?.name || ''
     },
     isTypePlayList () {
-      return this.media.type === 'playlist'
+      return this.media?.type === 'playlist'
+    },
+    isTypeArtist () {
+      return this.media?.type === 'artist'
+    },
+    isNotLink () {
+      return this.isTypePlayList || this.isTypeArtist
     },
     contents () {
-      if (this.media.type === 'playlist') {
+      if (this.isTypePlayList) {
         return this.media.description
+      }
+      if (this.isTypeArtist) {
+        return this.media?.type
       }
       return this.media?.artists
     },
@@ -65,7 +74,7 @@ export default {
       return this.media?.artists
     },
     imagePath () {
-      if (this.media.type === 'playlist') {
+      if (this.isTypePlayList || this.isTypeArtist) {
         return this.media?.images[0]?.url || ''
       }
       return this.media?.album?.images[0]?.url || ''
@@ -73,6 +82,16 @@ export default {
   },
   mounted() {
     console.log(this.item)
+  },
+  methods: {
+    handleClickMedia () {
+      console.log('eff')
+      this.$emit('click', this.media)
+    },
+    handleClickPlay () {
+      console.log('e')
+      this.$emit('clickPlay', this.media)
+    }
   }
 }
 </script>
@@ -86,6 +105,7 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
+    z-index: 1;
     transition: background-color 0.3s ease;
     &:hover {
       background-color: #282828;
@@ -115,6 +135,7 @@ export default {
     visibility: hidden;
     transform: translateY(8px);
     transition: all 0.2s ease-in;
+    z-index: 3;
   }
   &__desc {
     margin-top: 4px;
@@ -122,8 +143,8 @@ export default {
     font-weight: 400;
     letter-spacing: normal;
     line-height: 16px;
-    text-transform: none;
     color: #b3b3b3;
+    text-transform:capitalize;
     .comma {
       letter-spacing: 1px;
       margin-left: -4px;

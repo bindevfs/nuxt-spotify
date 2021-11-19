@@ -2,7 +2,7 @@
   <ul class="nav-list">
     <li v-for="item in navList" :key="item.id" class="nav-list__item">
       <nuxt-link :to="item.link" class="nav-list__link">
-        <div class="nav-list__icon">
+        <div :class="['nav-list__icon', { 'nav-list__icon--heart': item.icon === 'heart'}]">
           <span :class="'icon icon-' + item.icon"></span>
         </div>
         <div class="nav-list__text-link">
@@ -41,6 +41,22 @@ export default {
       font-size: 24px;
       &::before {
         color: var(--nav-list-color);
+      }
+    }
+    &--heart {
+      background-color: #0093E9;
+      background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+      width: 1.5rem;
+      height: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 2px;
+      .icon {
+        font-size: 12px;
+        &::before {
+          color: #fff;
+        }
       }
     }
   }
