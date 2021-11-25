@@ -1,7 +1,7 @@
 <template>
   <div class="recently-played">
     <div class="recently-played__list">
-      <div class="recently-played__item" v-for="i in 6" :key="i">
+      <div v-for="i in 6" :key="i" class="recently-played__item">
         <div class="recently-played__wrap-img">
           <div class="recently-played__bg-img">
             <img src="https://i.scdn.co/image/ab6761610000e5ebc48716f91b7bf3016f5b6fbe" alt="Image">

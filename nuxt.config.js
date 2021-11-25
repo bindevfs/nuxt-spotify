@@ -18,7 +18,10 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    'ant-design-vue/dist/antd.css',
+    {
+      src: 'ant-design-vue/dist/antd.less',
+      lang: 'less'
+    },
     'assets/scss/app.scss'
   ],
 
@@ -81,7 +84,30 @@ export default {
     },
     transpile: [
       'lodash-es'
-    ]
+    ],
+    extend (config, ctx) {
+      if (ctx.isDev && ctx.isClient) {
+        config.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /(node_modules|.nuxt)/
+        })
+      }
+      config.module.rules.push({
+        test: /\.less$/,
+        use: [{
+          loader: 'less-loader',
+          options: {
+            modifyVars: {
+              'primary-color': '#1db954',
+              'table-row-hover-bg': 'rgba(255, 255, 255, 0.1)'
+            },
+            javascriptEnabled: true
+          }
+        }]
+      })
+    }
   },
   router: {
     scrollBehavior (to, from, savedPosition) {

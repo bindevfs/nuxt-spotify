@@ -4,7 +4,8 @@ import {
   Dropdown,
   Menu,
   Slider,
-  Icon
+  Icon,
+  Table
 } from 'ant-design-vue/lib';
 
 Vue.use(Button)
@@ -12,3 +13,4 @@ Vue.use(Dropdown)
 Vue.use(Menu)
 Vue.use(Slider)
 Vue.use(Icon)
+Vue.use(Table)
