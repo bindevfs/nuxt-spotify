@@ -25,7 +25,7 @@ export default {
   grid-area: main-view;
   z-index: 3;
   display: flex;
-  height: 60px;
+  height: $header-height;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;

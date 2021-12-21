@@ -3,9 +3,10 @@
     <div class="layout__container">
       <s-top-bar />
       <div class="layout__view">
-        <div v-show="visibleStickyTop" class="layout__sticky-top-scroll"></div>
         <div class="layout__bg-linear"></div>
-        <nuxt />
+        <transition name="home" mode="out-in">
+          <nuxt keep-alive :keep-alive-props="{ max: 5 }" />
+        </transition>
       </div>
       <s-nav-bar />
       <s-now-playing-bar />
@@ -25,7 +26,7 @@ export default {
   },
   computed: {
     visibleStickyTop () {
-      return this.$route.name !== 'artist-id'
+      return this.$route.name === 'index' || this.$route.name === 'browse'
     }
   },
   mounted () {
@@ -84,12 +85,6 @@ export default {
     width: 100%;
     height: 20vw;
     z-index: -1;
-  }
-  &__sticky-top-scroll {
-    position: sticky;
-    top: 0;
-    height: 60px;
-    z-index: 2;
   }
 }
 </style>

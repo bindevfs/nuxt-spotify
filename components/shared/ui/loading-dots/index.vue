@@ -1,12 +1,24 @@
 <template>
-  <div class="lds-ellipsis">
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
+  <div class="dots">
+    <div class="dots__loading">
+      <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped>
+.dots {
+  &__loading {
+    height: calc(100vh - #{$playing-bar-height} - #{$header-height} - 30px);
+    width: 100%;
+    display: grid;
+    place-content: center;
+  }
+}
 .lds-ellipsis {
   display: inline-block;
   position: relative;

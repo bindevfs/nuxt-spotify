@@ -17,6 +17,12 @@ export default {
   async fetch() {
     await this.$store.dispatch('browse/getBrowseAllCategoriesAction')
   },
+  activated() {
+    // Call fetch again if last fetch more than a minute ago
+    if (this.$fetchState.timestamp <= Date.now() - 60000) {
+      this.$fetch()
+    }
+  },
   computed: {
     browseCategories () {
       return this.$store.state.browse.browseCategories
@@ -26,7 +32,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .browse {
-  padding: 1.5rem;
+  padding: $header-height 1.5rem 1.5rem;
   &__list {
     display: grid;
     grid-gap: 24px;

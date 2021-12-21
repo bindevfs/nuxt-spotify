@@ -1,3 +1,5 @@
+import { fromPairs, last, get } from 'lodash-es'
+
 export const getDataAfterHashLocation = (list) => {
   return list.reduce(function(obj, str, index) {
     const strParts = str.split("=");
@@ -15,3 +17,9 @@ export const getRandomRgb = () => {
   const blue = num & 255;
   return 'rgb(' + reb + ', ' + green + ', ' + blue + ')';
 }
+
+export const deepPickObject = (obj, paths) =>
+  fromPairs(paths.map(p => [
+    last(p.split('.')),
+    get(obj, p),
+  ]))

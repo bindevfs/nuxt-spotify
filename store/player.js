@@ -1,4 +1,4 @@
-import { shuffle } from 'lodash-es'
+// import { shuffle } from 'lodash-es'
 
 export const state = () => ({
   recentlyPlayedList: []
@@ -74,7 +74,7 @@ export const actions = {
   async getRecentlyPlayedAction ({commit}) {
     try {
       const { items } = await this.$playerApi.getRecentlyPlayed()
-      commit('setRecentlyPlayedList', shuffle(items))
+      commit('setRecentlyPlayedList', items)
     } catch (e) {
       console.error(e)
     }
