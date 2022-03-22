@@ -4,6 +4,8 @@
       :default-value="0"
       :tip-formatter="null"
       :style="{'--track-time-color': color }"
+      :value="currentValue"
+      :max="maxDuration"
     />
   </div>
 </template>
@@ -15,6 +17,10 @@ export default {
       default: '#1db954'
     },
     currentValue: {
+      type: Number,
+      default: 0
+    },
+    maxDuration: {
       type: Number,
       default: 0
     }

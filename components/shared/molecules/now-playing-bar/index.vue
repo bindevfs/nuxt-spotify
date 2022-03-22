@@ -3,7 +3,7 @@
     <div class="playing-bar__container">
       <div class="playing-bar__wrapper">
         <div class="playing-bar__left">
-          <s-track-info />
+          <s-track-info v-if="currentTrack"/>
         </div>
         <div class="playing-bar__center">
           <s-playing-controls />
@@ -28,6 +28,11 @@ export default {
     STrackInfo: () => import('~/components/shared/ui/track-info/index.vue'),
     SPlayingControls: () => import('~/components/shared/ui/playing-controls/index.vue'),
     STrackTimeLine: () => import('~/components/shared/ui/slider-timeline/index.vue')
+  },
+  computed: {
+    currentTrack () {
+      return this.$store.getters['playback/currentTrack']
+    }
   }
 }
 </script>

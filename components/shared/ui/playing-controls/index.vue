@@ -23,11 +23,14 @@
       <div class="playing-controls__timeline">
         <div class="track-time">
           <div class="track-time__wrapper">
-            <div class="track-time__duration">0:00</div>
+            <div class="track-time__duration">{{ progress | duration }}</div>
             <div class="track-time__line">
-              <s-track-time-line />
+              <s-track-time-line
+                :current-value="progress"
+                :max-duration="durationMS"
+              />
             </div>
-            <div class="track-time__duration">3:55</div>
+            <div class="track-time__duration">{{ durationMS | duration }}</div>
           </div>
         </div>
       </div>
@@ -39,9 +42,38 @@ export default {
   components: {
     STrackTimeLine: () => import('~/components/shared/ui/slider-timeline/index.vue')
   },
-  data () {
+  data() {
     return {
-      isPlaying: false
+      isPlaying: false,
+      progressInterval: null,
+      progress: 0
+    }
+  },
+  computed: {
+    playback() {
+      return this.$store.state.playback.playbackData
+    },
+    durationMS() {
+      return this.playback.duration
+    },
+    position() {
+      return this.$store.getters['playback/position']
+    }
+  },
+  mounted() {
+    this.updateProgress()
+  },
+  methods: {
+    updateProgress() {
+      clearInterval(this.progressInterval)
+      this.progress = this.position
+      if (!this.playback.paused) {
+        this.progressInterval = setInterval(() => {
+          if (this.playback && this.progress + 1000 <= this.durationMS) {
+            this.progress = this.progress + 1000
+          }
+        }, 1000)
+      }
     }
   }
 }
@@ -55,31 +87,38 @@ export default {
     justify-content: center;
     gap: 12px;
   }
+
   &__timeline {
     flex: 1;
     width: 100%;
   }
 }
+
 .controls {
   &__wrapper {
     display: flex;
     align-items: center;
     gap: 1.5rem
   }
+
   &__item {
     .anticon {
       font-size: 30px;
       cursor: pointer;
       transition: all 0.2s linear;
+
       &:hover {
         transform: scale(1.1);
       }
     }
+
     .icon {
       transition: color 0.2s ease;
+
       &::before {
         color: #b3b3b3;
       }
+
       &:hover {
         &::before {
           color: #fff;
@@ -87,6 +126,7 @@ export default {
       }
     }
   }
+
   &__icon {
     cursor: pointer;
   }
@@ -98,9 +138,11 @@ export default {
     align-items: center;
     gap: 8px;
   }
+
   &__line {
     flex: 1;
   }
+
   &__duration {
     color: #b3b3b3;
     font-size: 11px;

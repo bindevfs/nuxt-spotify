@@ -1,18 +1,33 @@
 <template>
   <div class="track-info">
     <div class="track-info__wrap-img">
-      <img src="https://i.scdn.co/image/ab67616d00004851d28b4546b16fc8e0000f277e" alt="">
+      <img :src="imgThumb" :alt="currentTrack.name">
     </div>
     <div class="track-info__content">
       <div class="track-info__name">
-        Yeu Moi Nguoi Co Le
+        {{ currentTrack.name }}
       </div>
       <div class="track-info__artists">
-        Lou Hoang
+        <div v-for="(artist, idx) in currentTrack.artists" :key="idx">
+          <span v-if="idx !== 0"> ,</span>
+          <nuxt-link :to="`/${artist.artistUrl}`">{{ artist.name }}</nuxt-link>
+        </div>
       </div>
     </div>
   </div>
 </template>
+<script>
+export default {
+  computed: {
+    currentTrack () {
+      return this.$store.getters['playback/currentTrack']
+    },
+    imgThumb () {
+      return this.currentTrack?.album?.images[0]?.url
+    }
+  }
+}
+</script>
 <style lang="scss" scoped>
 .track-info {
   display: flex;
@@ -40,6 +55,7 @@
     line-height: 13px;
     color: #b3b3b3;
     margin-top: 4px;
+    display: flex;
   }
 }
 </style>

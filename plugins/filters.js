@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import { TimeUtil } from '~/utils/time-util'
+
 dayjs.extend(relativeTime)
 
 Vue.filter('durationToMinutes', function(duration) {
@@ -18,4 +20,11 @@ Vue.filter('fromToNowDate', function(date) {
     return dayjs(date).format('MMM DD, YYYY')
   }
   return ''
+})
+
+Vue.filter('duration', function(value) {
+  if (!value) {
+    return '';
+  }
+  return TimeUtil.formatDuration(value)
 })

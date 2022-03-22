@@ -5,5 +5,11 @@ export default ($axios) => ({
         limit: 10
       }
     })
+  },
+  transferUserPlayback (deviceId) {
+    return $axios.$put('me/player', {
+      device_ids: [deviceId],
+      play: true
+    })
   }
 })
