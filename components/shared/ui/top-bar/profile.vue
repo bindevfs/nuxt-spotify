@@ -3,10 +3,10 @@
     <a-dropdown :trigger="['click']">
       <div class="profile__inner">
         <div class="profile__avatar">
-          <img src="https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1236206846568760&height=300&width=300&ext=1638757936&hash=AeSNFhIrFPBuuJkRRV0" alt="Avatar" />
+          <img :src="imageAvatar" alt="Avatar" />
         </div>
         <div class="profile__name">
-          <span>LE DINH HUAN NAME LE</span>
+          <span>{{ fullName }}</span>
         </div>
       </div>
       <a-menu slot="overlay" class="profile__top-bar">
@@ -23,6 +23,23 @@
     </a-dropdown>
   </div>
 </template>
+<script>
+export default {
+  computed: {
+    user () {
+      return this.$store.state.auth.user
+    },
+    imageAvatar() {
+      const img = this.user?.images || []
+      // eslint-disable-next-line import/no-absolute-path
+      return img.length !== 0 ? img[0].url : require('/static/images/commons/avatar.svg')
+    },
+    fullName () {
+      return this.user?.display_name || ''
+    }
+  }
+}
+</script>
 <style lang="scss" scoped>
 .profile {
   background: rgba(0, 0, 0, 0.7);

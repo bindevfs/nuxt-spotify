@@ -1,7 +1,18 @@
 export const state = () => ({
   browseCategories: [],
-  playlists: []
+  playlists: [],
+  featuredPlayLists: {}
 })
+
+export const getters = {
+  getTitleFeaturedPlayLists (state) {
+    return state.featuredPlayLists?.message
+  } ,
+  getFeaturedPlayLists (state) {
+    console.log('state.featuredPlayLists?.playlists?.items', state.featuredPlayLists)
+    return state.featuredPlayLists?.playlists?.items || []
+  }
+}
 
 export const mutations = {
   setBrowseCategories (state, payload) {
@@ -9,6 +20,9 @@ export const mutations = {
   },
   setBrowsePlaylists (state, payload) {
     state.playlists = payload
+  },
+  SET_FEATURED_PLAYLISTS (state, payload) {
+    state.featuredPlayLists = payload
   }
 }
 
@@ -28,5 +42,13 @@ export const actions = {
     } catch (e) {
       console.error(e)
     }
-  }
+  },
+  async getFeaturedPlayLists ({ commit }) {
+    try {
+      const res = await this.$browseApi.getFeaturedPlayLists()
+      commit('SET_FEATURED_PLAYLISTS', res)
+    } catch (e) {
+      console.error(e)
+    }
+  },
 }

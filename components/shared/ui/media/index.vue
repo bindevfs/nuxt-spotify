@@ -58,6 +58,9 @@ export default {
     isTypeArtist () {
       return this.media?.type === 'artist'
     },
+    isTypeTrack () {
+      return this.media?.type === 'track'
+    },
     isNotLink () {
       return this.isTypePlayList || this.isTypeArtist
     },
@@ -74,6 +77,7 @@ export default {
       return this.media?.artists
     },
     imagePath () {
+      console.log('item: ', this.item, this.media?.type)
       if (this.isTypePlayList || this.isTypeArtist) {
         return this.media?.images[0]?.url || ''
       }

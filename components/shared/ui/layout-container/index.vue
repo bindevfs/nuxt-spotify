@@ -10,7 +10,7 @@
             {{ title }}
           </template>
         </h2>
-        <div class="layout-container__view-all">
+        <div v-if="isViewAll" class="layout-container__view-all">
           <a href="javascript:void(0)" class="layout-container__link" @click="$emit('clickAll')">SEE ALL</a>
         </div>
       </div>
@@ -30,6 +30,10 @@ export default {
     header: {
       type: [String, Object],
       required: true
+    },
+    isViewAll: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {

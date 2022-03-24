@@ -7,7 +7,7 @@ export const state = () => ({
   tokenType: 'Bearer',
   isRefreshing: false,
   isPremium: false,
-  user: null
+  user: {}
 })
 export const getters = {
   isLoggedIn (state) {

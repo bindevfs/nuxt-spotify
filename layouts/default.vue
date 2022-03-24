@@ -31,7 +31,7 @@ export default {
   },
   mounted () {
     this.initAuth()
-    this.$store.dispatch('player/initPlayer', this.$store.state.auth.accessToken)
+    this.$store.dispatch('playback/initPlayer', this.$store.state.auth.accessToken)
     this.$nextTick(() => {
       document.querySelector('.layout__view').addEventListener('scroll', this.handleScroll)
     })

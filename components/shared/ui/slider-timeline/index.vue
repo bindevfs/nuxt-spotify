@@ -1,11 +1,12 @@
 <template>
   <div class="track-time">
     <a-slider
-      :default-value="0"
-      :tip-formatter="null"
-      :style="{'--track-time-color': color }"
+      v-model="valueSlider"
       :value="currentValue"
-      :max="maxDuration"
+      :tip-formatter="null"
+      :max="max"
+      :style="{'--track-time-color': color }"
+      @afterChange="handleAfterChange"
     />
   </div>
 </template>
@@ -20,9 +21,24 @@ export default {
       type: Number,
       default: 0
     },
-    maxDuration: {
+    max: {
       type: Number,
       default: 0
+    }
+  },
+  data () {
+    return {
+      valueSlider: 0
+    }
+  },
+  watch: {
+    currentValue (value) {
+      this.valueSlider = value
+    }
+  },
+  methods: {
+    handleAfterChange (value) {
+      this.$emit('afterChange', value)
     }
   }
 }

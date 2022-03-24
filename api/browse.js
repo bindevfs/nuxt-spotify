@@ -16,5 +16,13 @@ export default ($axios) => ({
         country: 'VN'
       }
     })
+  },
+  getFeaturedPlayLists () {
+    return $axios.$get(`browse/featured-playlists`, {
+      params: {
+        limit: 50,
+        country: 'VN'
+      }
+    })
   }
 })

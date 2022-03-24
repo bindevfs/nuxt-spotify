@@ -1,6 +1,7 @@
 <template>
   <s-layout-container
     :header="header"
+    :is-view-all="isViewAll"
     @clickTitle="handleClickTitle"
     @clickAll="handleClickViewAll"
   >
@@ -28,6 +29,10 @@ export default {
     header: {
       type: [String, Object],
       required: true
+    },
+    isViewAll: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {
