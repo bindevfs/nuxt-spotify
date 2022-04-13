@@ -93,7 +93,7 @@ export default {
     },
     async handleClickTogglePlay () {
       this.isPlayingButton = !this.isPlayingButton
-      await this.togglePlay(this.isPlayingButton)
+      await this.togglePlay({ isPlaying: this.isPlayingButton })
     },
     async handleClickNext() {
       await this.next()

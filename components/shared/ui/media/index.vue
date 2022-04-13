@@ -1,9 +1,10 @@
 <template>
   <div class="media">
-    <div class="media__container" @click="handleClickMedia">
+    <div class="media__container">
+      <div class="media__click" @click="handleClickMedia"></div>
       <div class="media__cover">
         <s-media-thumbnail :bordered="isTypeArtist" :src-image="imagePath" :alt="name"/>
-        <div class="media__play" @click="handleClickPlay">
+        <div class="media__play">
           <s-play-button />
         </div>
       </div>
@@ -16,11 +17,11 @@
         <div v-if="isNotLink" class="media__desc" v-html="contents"></div>
         <div v-else class="media__desc">
           <template v-for="(artist, index) in artists">
-            <nuxt-link
+            <a
               :key="`${index}_${artist.id}`"
-              :to="`/artist/${artist.id}`">
+              @click="$router.push(`/artist/${artist.id}`)">
               {{ artist.name }}
-            </nuxt-link>
+            </a>
             <span v-if="index < artists.length - 1" :key="artist.id" class="comma">
               &#44;
             </span>
@@ -77,23 +78,17 @@ export default {
       return this.media?.artists
     },
     imagePath () {
-      console.log('item: ', this.item, this.media?.type)
       if (this.isTypePlayList || this.isTypeArtist) {
         return this.media?.images[0]?.url || ''
       }
       return this.media?.album?.images[0]?.url || ''
     }
   },
-  mounted() {
-    console.log(this.item)
-  },
   methods: {
     handleClickMedia () {
-      console.log('eff')
       this.$emit('click', this.media)
     },
     handleClickPlay () {
-      console.log('e')
       this.$emit('clickPlay', this.media)
     }
   }
@@ -101,7 +96,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .media {
-  cursor: pointer;
   &__container {
     background-color: #181818;
     padding: 1rem;
@@ -118,6 +112,19 @@ export default {
   &__cover {
     margin-bottom: 1rem;
     position: relative;
+  }
+  &__click {
+    bottom: 0;
+    content: "";
+    cursor: pointer;
+    left: 0;
+    overflow: hidden;
+    right: 0;
+    text-indent: 100%;
+    top: 0;
+    white-space: nowrap;
+    position: absolute;
+    z-index: 1;
   }
   &__song-name {
     display: inline-block;

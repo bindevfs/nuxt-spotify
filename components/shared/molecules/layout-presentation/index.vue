@@ -89,7 +89,7 @@ export default {
     transition: all 0.2s ease-in-out;
     &-contain {
       display: flex;
-      align-items: end;
+      align-items: flex-end;
     }
     &-bg {
       width: 100%;

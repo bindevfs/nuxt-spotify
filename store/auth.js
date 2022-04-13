@@ -10,30 +10,29 @@ export const state = () => ({
   user: {}
 })
 export const getters = {
-  isLoggedIn (state) {
-    console.log('state.accessToken', state.accessToken)
+  isLoggedIn(state) {
     return state.accessToken !== ''
   }
 }
 
 export const mutations = {
-  setAccessToken (state, payload) {
+  setAccessToken(state, payload) {
     state.accessToken = payload
     this.$cookies.set('access_token', payload)
   },
-  setTokenType (state, payload) {
+  setTokenType(state, payload) {
     state.tokenType = payload
   },
-  setExpiresIn (state, payload) {
+  setExpiresIn(state, payload) {
     state.expiresIn = payload
   },
-  setUser (state, payload) {
+  setUser(state, payload) {
     state.user = payload
   }
 }
 
 export const actions = {
-  async initAuth ({commit}) {
+  async initAuth({ commit }) {
     if (!window.location.hash) {
       window.location.href = createAuthorizeURL()
     }

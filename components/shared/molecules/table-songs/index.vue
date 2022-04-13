@@ -102,7 +102,7 @@ export default {
 }
 .track {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   gap: 12px;
   &__name {
     color: #fff;

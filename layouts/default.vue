@@ -5,7 +5,7 @@
       <div class="layout__view">
         <div class="layout__bg-linear"></div>
         <transition name="home" mode="out-in">
-          <nuxt keep-alive :keep-alive-props="{ max: 5 }" />
+          <nuxt />
         </transition>
       </div>
       <s-nav-bar />

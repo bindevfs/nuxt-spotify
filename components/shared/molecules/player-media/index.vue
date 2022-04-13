@@ -45,6 +45,10 @@ export default {
     handleClickMedia (item) {
       if (item.type === 'artist') {
         this.$router.push(`/artist/${item.id}`)
+        return
+      }
+      if (item.type === 'track') {
+        this.$router.push(`/album/${item.album.id}`)
       }
     }
   }

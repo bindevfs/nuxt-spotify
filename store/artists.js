@@ -1,3 +1,5 @@
+import { isMediaPlayingState } from '~/utils/state-util'
+
 export const state = () => ({
   topTracks: [],
   artist: {},
@@ -7,6 +9,19 @@ export const state = () => ({
 export const getters = {
   getTopFiveArtistRelated (state) {
     return state.artistRelated.slice(0, 5)
+  },
+  combinePlayBackUri (state, getters, rootState, rootGetters) {
+    const playBackContext = rootGetters['playback/getPlaybackContext']
+    const uriTracks = state.topTracks.map((track) => track.uri)
+    return uriTracks.map((uri) => {
+      return [
+        uri,
+        playBackContext
+      ]
+    })
+  },
+  isArtistPlaying (state, getters) {
+    return isMediaPlayingState(getters.combinePlayBackUri)
   }
 }
 

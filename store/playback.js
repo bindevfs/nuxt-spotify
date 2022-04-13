@@ -24,7 +24,7 @@ export const getters = {
     const { album } = track
     const albumId = StringUtil.getIdFromUri(album.uri)
     const albumUrl = RouteUtil.getAlbumRouteUrl(albumId)
-    const trackExtended = {
+    return {
       ...track,
       albumUrl,
       artists: track.artists.map((artist) => {
@@ -36,8 +36,6 @@ export const getters = {
         }
       })
     }
-    console.log('trackExtended: ', trackExtended)
-    return trackExtended
   },
   position(state) {
     return state.playbackData?.position || 0
@@ -151,12 +149,12 @@ export const actions = {
       console.error(e)
     }
   },
-  async togglePlay({ commit }, isPlaying) {
+  async togglePlay({ commit }, { isPlaying, request }) {
     try {
       if (isPlaying) {
         await this.$playerApi.pause()
       } else {
-        await this.$playerApi.play()
+        await this.$playerApi.play(request)
       }
     } catch (e) {
       console.error(e)
