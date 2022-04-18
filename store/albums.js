@@ -1,3 +1,5 @@
+import { isMediaPlayingState } from '~/utils/state-util'
+
 export const state = () => ({
   album: null
 })
@@ -20,6 +22,20 @@ export const getters = {
       }
     }
     return {}
+  },
+  combinePlayBackUri (state, getters, rootState, rootGetters) {
+    const playBackContext = rootGetters['playback/getPlaybackContext']
+    const uriTracks = getters.getTracks.map((track) => track?.uri)
+    return uriTracks.map((uri) => {
+      return [
+        uri,
+        playBackContext
+      ]
+    })
+  },
+  isAlbumPlaying (state, getters) {
+    console.log(getters.combinePlayBackUri)
+    return isMediaPlayingState(getters.combinePlayBackUri)
   }
 }
 

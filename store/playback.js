@@ -15,6 +15,14 @@ export const getters = {
   },
   isPlaying: (state) => state.playback?.is_playing,
   getPlaybackContext: (state) => state.playbackContext,
+  getTitle (state, getters) {
+    const currentTrack = getters.getPlaybackContext.playback?.track_window?.current_track
+    console.log(currentTrack)
+    if (currentTrack) {
+      return `${currentTrack.name} - ${currentTrack.artists[0]?.name}`
+    }
+    return 'Spotify - Nuxt application'
+  },
   currentTrack(state) {
     const { track_window: trackWindow } = state.playbackData
     const track = trackWindow?.current_track || ''
@@ -76,7 +84,7 @@ export const actions = {
       }
     })
   },
-  async initPlayer({ dispatch, rootState, commit }, token) {
+  async initPlayer({ dispatch, rootState, commit, getters }, token) {
     if (rootState.auth.isLoggedIn) {
       window.onSpotifyWebPlaybackSDKReady = () => {
       }
@@ -127,6 +135,8 @@ export const actions = {
       commit('setPlaybackData', { data: playerState, volume: await player.getVolume() })
       dispatch('setPlaybackContext', playerState)
       dispatch('setPlayBack')
+      console.log('gggg', getters.getTitle)
+      document.title = getters.getTitle
     }))
 
     await player.connect()

@@ -5,7 +5,7 @@
       <div class="media__cover">
         <s-media-thumbnail :bordered="isTypeArtist" :src-image="imagePath" :alt="name"/>
         <div class="media__play">
-          <s-play-button />
+          <s-play-button :is-playing="isPlaying" @click="handleClickPlay"/>
         </div>
       </div>
       <div class="media__content">
@@ -34,6 +34,7 @@
 <script>
 import SMediaThumbnail from '~/components/shared/ui/media/thumbnail'
 import SPlayButton from '~/components/shared/ui/play-button'
+import { isMediaPlayingState } from '~/utils/state-util'
 
 export default {
   components: {
@@ -59,9 +60,6 @@ export default {
     isTypeArtist () {
       return this.media?.type === 'artist'
     },
-    isTypeTrack () {
-      return this.media?.type === 'track'
-    },
     isNotLink () {
       return this.isTypePlayList || this.isTypeArtist
     },
@@ -82,14 +80,36 @@ export default {
         return this.media?.images[0]?.url || ''
       }
       return this.media?.album?.images[0]?.url || ''
+    },
+    uri () {
+      if (this.item.track) {
+        return this.item.track?.uri || ''
+      }
+      return this.item?.uri
+    },
+    combinePlayBackUri () {
+      const playBackContext = this.$store.getters['playback/getPlaybackContext']
+      if (Object.keys(playBackContext).length !== 0 && this.uri) {
+        return [[this.uri, playBackContext]]
+      }
+      return []
+    },
+    isPlaying () {
+      return isMediaPlayingState(this.combinePlayBackUri)
     }
   },
   methods: {
     handleClickMedia () {
       this.$emit('click', this.media)
     },
-    handleClickPlay () {
-      this.$emit('clickPlay', this.media)
+    async handleClickPlay () {
+      const payload = {
+        isPlaying: this.isPlaying,
+        request: {
+          context_uri: this.uri
+        }
+      }
+      await this.$store.dispatch('playback/togglePlay', payload)
     }
   }
 }

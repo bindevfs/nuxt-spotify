@@ -4,10 +4,13 @@
       <media-summary :media-summary="summary" />
     </template>
     <template #actions>
-      <action-detail-track />
+      <action-detail-track
+        :is-playing="isAlbumPlaying"
+        @click-play="toggleAlbum"
+      />
     </template>
     <template #tracks>
-      <s-popular-list-song :songs="tracks" type="album" />
+      <s-popular-list-song :songs="topTracks" type="album" />
     </template>
   </layout-common-detail-track>
 </template>
@@ -32,8 +35,41 @@ export default {
   computed: {
     ...mapGetters('albums', {
       tracks: 'getTracks',
-      summary: 'getAlbumSummary'
-    })
+      summary: 'getAlbumSummary',
+      isAlbumPlaying: 'isAlbumPlaying'
+    }),
+    album () {
+      return this.$store.state.albums.album
+    },
+    topTracks () {
+      if (this.isAlbumPlaying) {
+        const playBackContext = this.$store.getters['playback/getPlaybackContext']
+        const uri = playBackContext.track_window?.current_track?.uri
+        return this.tracks.map((track) => {
+          return {
+            ...track,
+            is_playing_current: uri === track.uri
+          }
+        })
+      }
+      return this.tracks.map((track) => {
+        return {
+          ...track,
+          is_playing_current: false
+        }
+      })
+    },
+  },
+  methods: {
+    async toggleAlbum () {
+      const payload = {
+        isPlaying: this.isAlbumPlaying,
+        request: {
+          context_uri: this.album.uri
+        }
+      }
+      await this.$store.dispatch('playback/togglePlay', payload)
+    }
   }
 }
 </script>
