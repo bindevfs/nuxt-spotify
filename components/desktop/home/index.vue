@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <s-loading-dots v-if="$fetchState.pending"/>
+    <s-loading-dots v-if="isLoading"/>
     <div v-else class="home__container">
       <s-greeting v-if="false"/>
       <s-media-player
@@ -8,6 +8,7 @@
         header="Recently played"
         :play-list="recentlyPlayedList"
         :is-view-all="false"
+        is-uris
       />
       <s-media-player
         v-if="featuredPlayLists.length !== 0"
@@ -20,40 +21,39 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
-import SGreeting from '~/components/desktop/home/greeting'
-import SMediaPlayer from '~/components/shared/molecules/player-media'
-import SLoadingDots from '~/components/shared/ui/loading-dots/index.vue'
 
 export default {
   components: {
-    SGreeting,
-    SMediaPlayer,
-    SLoadingDots
+    SGreeting: () => import('~/components/desktop/home/greeting'),
+    SMediaPlayer: () => import('~/components/shared/molecules/player-media'),
+    SLoadingDots: () => import('~/components/shared/ui/loading-dots/index.vue')
   },
-  async fetch() {
-    try {
-      await Promise.all([
-        this.$store.dispatch('player/getRecentlyPlayedAction'),
-        this.$store.dispatch('browse/getFeaturedPlayLists')
-      ])
-    } catch (e) {
-      console.error(e)
-      return false
+  data () {
+    return {
+      isLoading: true
     }
   },
   computed: {
-    ...mapGetters('browse', {
-      featuredPlayLists: 'getFeaturedPlayLists',
-      titleFeaturedPlayLists: 'getTitleFeaturedPlayLists'
+    ...mapGetters({
+      featuredPlayLists: 'browse/getFeaturedPlayLists',
+      titleFeaturedPlayLists: 'browse/getTitleFeaturedPlayLists',
+      playback: 'playback/currentTrack'
     }),
     recentlyPlayedList () {
       return this.$store.getters['player/getRecentlyPlayedList']
     }
   },
-  activated() {
-    // Call fetch again if last fetch more than a minute ago
-    if (this.$fetchState.timestamp <= Date.now() - 60000) {
-      this.$fetch()
+  async mounted() {
+    this.isLoading = true
+    try {
+      await Promise.all([
+        this.$store.dispatch('player/getRecentlyPlayedAction'),
+        this.$store.dispatch('browse/getFeaturedPlayLists')
+      ])
+      this.isLoading = false
+    } catch (e) {
+      this.isLoading = false
+      console.error(e)
     }
   }
 }

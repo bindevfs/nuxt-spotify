@@ -9,7 +9,6 @@ export const getters = {
     return state.featuredPlayLists?.message
   } ,
   getFeaturedPlayLists (state) {
-    console.log('state.featuredPlayLists?.playlists?.items', state.featuredPlayLists)
     return state.featuredPlayLists?.playlists?.items || []
   }
 }

@@ -1,17 +1,19 @@
 <template>
   <div class="browse-show">
-    <s-media-player
-      header="Popular playlists"
-      :play-list="playlists"
-    />
+    <s-loading-dots v-if="$fetchState.pending"/>
+    <template v-else>
+      <s-media-player
+        header="Popular playlists"
+        :play-list="playlists"
+      />
+    </template>
   </div>
 </template>
 <script>
-import SMediaPlayer from '~/components/shared/molecules/player-media'
-
 export default {
   components: {
-    SMediaPlayer
+    SMediaPlayer: () => import('~/components/shared/molecules/player-media'),
+    SLoadingDots: () => import('~/components/shared/ui/loading-dots/index.vue')
   },
   async fetch() {
     await this.$store.dispatch('browse/getCategoryPlaylistsAction', this.$route.params.id)
@@ -23,3 +25,8 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.browse-show {
+  // padding: 60px 1.5rem 1.5rem;
+}
+</style>

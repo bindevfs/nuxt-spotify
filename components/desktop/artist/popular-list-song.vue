@@ -13,6 +13,7 @@
           'popular__item',
           { 'popular__item--active': song.is_playing_current }
         ]"
+        @dblclick="handleTogglePlaySong(song)"
       >
         <div class="popular__inner">
           <div v-if="song.is_playing_current" class="popular__sound-bar">
@@ -61,6 +62,11 @@ export default {
       type: String,
       default: 'artist'
     }
+  },
+  methods: {
+    handleTogglePlaySong (item) {
+      this.$emit('play-song', item)
+    }
   }
 }
 </script>
@@ -87,6 +93,8 @@ export default {
     margin-bottom: 2rem;
 
     &-item {
+      @include user-select;
+
       padding: 0.5rem 0;
     }
   }

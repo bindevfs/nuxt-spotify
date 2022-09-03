@@ -1,8 +1,7 @@
 export const isMediaPlayingState = (playBackUriList) => {
   return playBackUriList.map(([uri, playback]) => {
-    const hasContextUri = !!playback.context?.uri
-    const hasTrackPlaying = !!playback.track_window?.current_track
-    console.log('hasTrackPlaying: ', hasTrackPlaying)
+    const hasContextUri = !!playback?.context?.uri
+    const hasTrackPlaying = !!playback?.track_window?.current_track
     if (hasTrackPlaying) {
       const isCurrentTrackPlaying = uri === playback.track_window?.current_track?.uri
       if (isCurrentTrackPlaying) {
@@ -11,7 +10,6 @@ export const isMediaPlayingState = (playBackUriList) => {
     }
     if (hasContextUri) {
       const isCurrentPlaylistInContext = uri === playback.context?.uri
-      console.log(uri, playback.context?.uri, isCurrentPlaylistInContext)
       if (isCurrentPlaylistInContext) {
         return !playback.paused
       }

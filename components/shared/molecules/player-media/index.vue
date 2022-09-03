@@ -7,9 +7,10 @@
   >
     <s-media
       v-for="(item, index) in playList"
-      :key="`${index}_${item.id}`"
+      :key="`${index}`"
       :item="item"
       @click="handleClickMedia"
+      @click-play="handleClickPlay"
     />
   </s-layout-container>
 </template>
@@ -33,6 +34,10 @@ export default {
     isViewAll: {
       type: Boolean,
       default: true
+    },
+    isUris: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -50,6 +55,13 @@ export default {
       if (item.type === 'track') {
         this.$router.push(`/album/${item.album.id}`)
       }
+    },
+    async handleClickPlay (item) {
+      const payload = {
+        isPlaying: item.isPlaying,
+        request: this.isUris ? {'uris': [item.uri]}  : { context_uri: item.uri }
+      }
+      await this.$store.dispatch('playback/togglePlay', payload)
     }
   }
 }

@@ -4,6 +4,7 @@
     :columns="columns"
     :data-source="dataTable"
     :pagination="false"
+    :custom-row="customRow"
   >
     <template slot="index" slot-scope="text, record, index">
       {{ index + 1 }}
@@ -59,6 +60,14 @@ export default {
     dataTable: {
       type: Array,
       default: () => []
+    }
+  },
+  methods: {
+    customRow(record) {
+      console.log('e')
+      return {
+        dblclick: (event) => console.log('record', record, 'event', event)
+      }
     }
   }
 }

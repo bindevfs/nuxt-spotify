@@ -17,15 +17,15 @@ export default {
   async fetch() {
     await this.$store.dispatch('browse/getBrowseAllCategoriesAction')
   },
+  computed: {
+    browseCategories () {
+      return this.$store.state.browse.browseCategories
+    }
+  },
   activated() {
     // Call fetch again if last fetch more than a minute ago
     if (this.$fetchState.timestamp <= Date.now() - 60000) {
       this.$fetch()
-    }
-  },
-  computed: {
-    browseCategories () {
-      return this.$store.state.browse.browseCategories
     }
   }
 }

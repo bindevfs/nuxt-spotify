@@ -24,7 +24,7 @@ Vue.filter('fromToNowDate', function(date) {
 
 Vue.filter('duration', function(value) {
   if (!value) {
-    return '';
+    return '00:00';
   }
   return TimeUtil.formatDuration(value)
 })

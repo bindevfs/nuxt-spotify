@@ -10,7 +10,10 @@
       />
     </template>
     <template #tracks>
-      <s-popular-list-song :songs="topTracks"/>
+      <s-popular-list-song
+        :songs="topTracks"
+        @play-song="handleTogglePlaySongArtist"
+      />
     </template>
     <template #more>
       <s-media-player
@@ -22,23 +25,21 @@
   </layout-common-detail-track>
 </template>
 <script>
-import SPopularListSong from '~/components/desktop/artist/popular-list-song.vue'
-import SMediaPlayer from '~/components/shared/molecules/player-media'
-
 export default {
   components: {
-    SPopularListSong,
-    SMediaPlayer,
+    SPopularListSong: () => import('~/components/desktop/artist/popular-list-song.vue'),
+    SMediaPlayer: () => import('~/components/shared/molecules/player-media'),
     LayoutCommonDetailTrack: () => import('~/components/shared/molecules/layout-common-detail/index.vue'),
     ActionDetailTrack: () => import('~/components/shared/molecules/actions-detail/index.vue'),
     MediaSummary: () => import('~/components/shared/molecules/media-summary/index.vue')
   },
   async fetch() {
     try {
+      const id = this.$route.params.id
       await Promise.all([
-        this.$store.dispatch('artists/getArtistTopTrackAction', this.$route.params.id),
-        this.$store.dispatch('artists/getArtistAction', this.$route.params.id),
-        this.$store.dispatch('artists/getArtistRelatedAction', this.$route.params.id)
+        this.$store.dispatch('artists/getArtistTopTrackAction', id),
+        this.$store.dispatch('artists/getArtistAction', id),
+        this.$store.dispatch('artists/getArtistRelatedAction', id)
       ])
     } catch (e) {
       return false
@@ -57,8 +58,8 @@ export default {
     },
     topTracks () {
       if (this.isArtistPlaying) {
-        const playBackContext = this.$store.getters['playback/getPlaybackContext']
-        const uri = playBackContext.track_window?.current_track?.uri
+        const playBack = this.$store.getters['playback/getPlayback']
+        const uri = playBack.track_window?.current_track?.uri
         return this.$store.state.artists.topTracks.map((track) => {
           return {
             ...track,
@@ -94,7 +95,21 @@ export default {
       const payload = {
         isPlaying: this.isArtistPlaying,
         request: {
-          context_uri: this.artist.uri
+          context_uri: this.artist.uri,
+          position_ms: this.position
+        }
+      }
+      await this.$store.dispatch('playback/togglePlay', payload)
+    },
+    async handleTogglePlaySongArtist (song) {
+      const payload = {
+        isPlaying: false,
+        request: {
+          context_uri: song.album.uri,
+          offset: {
+            position: song.track_number - 1
+          },
+          position_ms: this.position
         }
       }
       await this.$store.dispatch('playback/togglePlay', payload)

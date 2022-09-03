@@ -10,7 +10,11 @@
       />
     </template>
     <template #tracks>
-      <s-popular-list-song :songs="topTracks" type="album" />
+      <s-popular-list-song
+        :songs="topTracks"
+        type="album"
+        @play-song="handleTogglePlaySongAlbum"
+      />
     </template>
   </layout-common-detail-track>
 </template>
@@ -33,18 +37,20 @@ export default {
   },
   fetchDelay: 500,
   computed: {
-    ...mapGetters('albums', {
-      tracks: 'getTracks',
-      summary: 'getAlbumSummary',
-      isAlbumPlaying: 'isAlbumPlaying'
+    ...mapGetters({
+      tracks: 'albums/getTracks',
+      summary: 'albums/getAlbumSummary',
+      isAlbumPlaying: 'albums/isAlbumPlaying',
+      playBack: 'playback/getPlayback',
+      position: 'playback/position'
     }),
     album () {
       return this.$store.state.albums.album
     },
     topTracks () {
       if (this.isAlbumPlaying) {
-        const playBackContext = this.$store.getters['playback/getPlaybackContext']
-        const uri = playBackContext.track_window?.current_track?.uri
+        const playBack = this.playBack
+        const uri = playBack.track_window?.current_track?.uri
         return this.tracks.map((track) => {
           return {
             ...track,
@@ -61,14 +67,33 @@ export default {
     },
   },
   methods: {
-    async toggleAlbum () {
+    async handleTogglePlaySongAlbum (song) {
       const payload = {
-        isPlaying: this.isAlbumPlaying,
+        isPlaying: false,
         request: {
-          context_uri: this.album.uri
+          context_uri: this.album.uri,
+          offset: {
+            position: song.track_number - 1
+          },
+          position_ms: this.position
         }
       }
       await this.$store.dispatch('playback/togglePlay', payload)
+    },
+    async toggleAlbum () {
+      if (this.topTracks.length) {
+        const payload = {
+          isPlaying: this.isAlbumPlaying,
+          request: {
+            context_uri: this.album.uri,
+            offset: {
+              position: 0
+            },
+            position_ms: this.position
+          }
+        }
+        await this.$store.dispatch('playback/togglePlay', payload)
+      }
     }
   }
 }
@@ -76,7 +101,7 @@ export default {
 <style lang="scss" scoped>
 .album {
   &__head {
-    min-height: 350px;
+    min-height: 274px;
     max-height: 500px;
     height: 35vh;
     display: flex;

@@ -17,5 +17,9 @@ module.exports = {
   plugins: [
   ],
   // add your custom rules here
-  rules: {}
+  rules: {
+    "no-console": 1,
+    "no-empty": 1,
+    "import/no-absolute-path": "off"
+  }
 }

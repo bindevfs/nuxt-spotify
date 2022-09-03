@@ -1,6 +1,6 @@
 <template>
   <div class="playing-controls">
-    <div v-if="context" class="playing-controls__container">
+    <div class="playing-controls__container">
       <div class="playing-controls__control">
         <div class="controls">
           <div class="controls__wrapper">
@@ -29,6 +29,7 @@
                 v-model="progress"
                 :tip-formatter="null"
                 :max="songDuration"
+                class="track-time__slider"
                 @afterChange="handleMoveSeek($event)"
               />
             </div>
@@ -47,31 +48,25 @@ export default {
     return {
       progressInterval: null,
       progress: 0,
-      songDuration: 0,
-      isPlayingButton: false
+      songDuration: 0
     }
   },
   computed: {
     ...mapGetters('playback', {
       playback: 'getPlayback',
-      context: 'getPlaybackContext',
       isPlaying: 'isPlaying'
     })
   },
   watch: {
     playback (val) {
-      this.songDuration = this.playback?.item?.duration_ms
-    },
-    context() {
-      this.progress = this.context.position
-    },
-    isPlaying() {
+      this.songDuration = this.playback.duration
+      this.progress = this.playback?.position
       this.updateProgress()
     }
   },
   created() {
     this.updateProgress()
-    this.songDuration = this.playback?.item?.duration_ms
+    this.songDuration = this.playback.duration
   },
   methods: {
     ...mapActions('playback', {
@@ -82,8 +77,8 @@ export default {
     }),
     updateProgress() {
       clearInterval(this.progressInterval)
-      this.progress = this.context.position
-      if (!this.context.paused) {
+      this.progress = this.playback?.position
+      if (!this.playback.paused) {
         this.progressInterval = setInterval(() => {
           if (this.playback && this.progress + 1000 <= this.songDuration) {
             this.progress = this.progress + 1000
@@ -92,8 +87,7 @@ export default {
       }
     },
     async handleClickTogglePlay () {
-      this.isPlayingButton = !this.isPlayingButton
-      await this.togglePlay({ isPlaying: this.isPlayingButton })
+      await this.togglePlay({ isPlaying: this.isPlaying })
     },
     async handleClickNext() {
       await this.next()
@@ -180,6 +174,9 @@ export default {
     font-size: 11px;
     line-height: 16px;
     font-weight: 400;
+  }
+  &__slider {
+    margin: 0;
   }
 }
 </style>

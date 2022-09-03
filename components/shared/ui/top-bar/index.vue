@@ -5,7 +5,7 @@
         <div class="top-bar__left">
           <s-direct-navigation />
         </div>
-        <div class="top-bar__right">
+        <div v-if="user" class="top-bar__right">
           <s-profile-avatar />
         </div>
       </div>
@@ -17,6 +17,11 @@ export default {
   components: {
     SProfileAvatar: () => import('~/components/shared/ui/top-bar/profile'),
     SDirectNavigation: () => import('~/components/shared/ui/top-bar/direct-navigation')
+  },
+  computed: {
+    user () {
+      return this.$store.state.auth.user
+    }
   }
 }
 </script>

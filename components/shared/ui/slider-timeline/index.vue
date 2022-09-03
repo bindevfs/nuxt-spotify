@@ -17,6 +17,10 @@ export default {
       type: String,
       default: '#1db954'
     },
+    value: {
+      type: Number,
+      default: 0
+    },
     currentValue: {
       type: Number,
       default: 0

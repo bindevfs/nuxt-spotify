@@ -12,8 +12,11 @@ export default ($axios) => ({
   transferUserPlayback (deviceId) {
     return $axios.$put('me/player', {
       device_ids: [deviceId],
-      play: true
+      play: false
     })
+  },
+  setVolume (volume) {
+    return $axios.$put(`me/player/volume?volume_percent=${volume}`)
   },
   pause () {
     return $axios.$put('me/player/pause')

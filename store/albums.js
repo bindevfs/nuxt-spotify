@@ -24,7 +24,7 @@ export const getters = {
     return {}
   },
   combinePlayBackUri (state, getters, rootState, rootGetters) {
-    const playBackContext = rootGetters['playback/getPlaybackContext']
+    const playBackContext = rootGetters['playback/getPlayback']
     const uriTracks = getters.getTracks.map((track) => track?.uri)
     return uriTracks.map((uri) => {
       return [
@@ -34,7 +34,6 @@ export const getters = {
     })
   },
   isAlbumPlaying (state, getters) {
-    console.log(getters.combinePlayBackUri)
     return isMediaPlayingState(getters.combinePlayBackUri)
   }
 }
@@ -49,7 +48,6 @@ export const actions = {
   async getAlbum ({commit}, id) {
     try {
       const res = await this.$albumsApi.getAlbum(id)
-      console.log('res', res)
       commit('SET_ALBUM', res)
     } catch (e) {
       console.error(e)

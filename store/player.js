@@ -3,10 +3,13 @@ export const state = () => ({
 })
 
 export const getters = {
-  getRecentlyPlayedList (state) {
-    return state.recentlyPlayedList
-      .filter(({ track }, idx, arr) => {
-        return arr.findIndex((item) => item.track.id === track.id) === idx
+  playList (state) {
+    return state.recentlyPlayedList.map((item) => item.track)
+  },
+  getRecentlyPlayedList (state, getters, rootState, rootGetters) {
+    return getters.playList
+      .filter((track, idx, arr) => {
+        return arr.findIndex((item) => item.id === track.id) === idx
       })
       .slice(0, 20);
   }

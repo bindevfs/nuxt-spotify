@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     media () {
-      return this.item?.track ? this.item?.track : this.item
+      return this.item
     },
     name () {
       return this.media?.name || ''
@@ -59,6 +59,9 @@ export default {
     },
     isTypeArtist () {
       return this.media?.type === 'artist'
+    },
+    isTypeAlbum () {
+      return this.media?.type === 'album'
     },
     isNotLink () {
       return this.isTypePlayList || this.isTypeArtist
@@ -76,10 +79,11 @@ export default {
       return this.media?.artists
     },
     imagePath () {
-      if (this.isTypePlayList || this.isTypeArtist) {
-        return this.media?.images[0]?.url || ''
+      if (this.isTypePlayList || this.isTypeArtist || this.isTypeAlbum) {
+        return this.media?.images[0]?.url || require('/static/images/commons/artist-default.svg')
       }
-      return this.media?.album?.images[0]?.url || ''
+      // eslint-disable-next-line import/no-absolute-path
+      return this.media?.album?.images[0]?.url || require('/static/images/commons/artist-default.svg')
     },
     uri () {
       if (this.item.track) {
@@ -88,9 +92,9 @@ export default {
       return this.item?.uri
     },
     combinePlayBackUri () {
-      const playBackContext = this.$store.getters['playback/getPlaybackContext']
-      if (Object.keys(playBackContext).length !== 0 && this.uri) {
-        return [[this.uri, playBackContext]]
+      const playBack = this.$store.getters['playback/getPlayback']
+      if (Object.keys(playBack).length !== 0 && this.uri) {
+        return [[this.uri, playBack]]
       }
       return []
     },
@@ -102,14 +106,12 @@ export default {
     handleClickMedia () {
       this.$emit('click', this.media)
     },
-    async handleClickPlay () {
+    handleClickPlay () {
       const payload = {
         isPlaying: this.isPlaying,
-        request: {
-          context_uri: this.uri
-        }
+        uri: this.uri
       }
-      await this.$store.dispatch('playback/togglePlay', payload)
+      this.$emit('click-play', payload)
     }
   }
 }

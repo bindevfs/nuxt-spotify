@@ -1,37 +1,71 @@
 <template>
   <div class="playing-bar">
     <div class="playing-bar__container">
-      <div class="playing-bar__wrapper">
+      <div v-if="currentTrack" class="playing-bar__wrapper">
         <div class="playing-bar__left">
-          <s-track-info v-if="currentTrack"/>
+          <s-track-info />
         </div>
         <div class="playing-bar__center">
           <s-playing-controls />
         </div>
         <div class="playing-bar__right">
           <div class="sound">
-            <div class="sound__icon">
-              <span class="icon icon-sound-on"></span>
+            <div class="sound__icon" @click="toggleOnOfSoundVolume">
+              <span :class="['icon', volumeCurrent > 0 ? ' icon-sound-on' : ' icon-sound-off']"></span>
             </div>
             <div class="sound__slider">
-              <s-track-time-line />
+              <a-slider
+                v-model="volumeCurrent"
+                :tip-formatter="null"
+                :max="100"
+                @afterChange="handleMoveVolume($event)"
+              />
             </div>
           </div>
         </div>
       </div>
+      <template v-else>
+        loading.....
+      </template>
     </div>
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+import { debounce } from 'lodash-es'
+
 export default {
   components: {
     STrackInfo: () => import('~/components/shared/ui/track-info/index.vue'),
-    SPlayingControls: () => import('~/components/shared/ui/playing-controls/index.vue'),
-    STrackTimeLine: () => import('~/components/shared/ui/slider-timeline/index.vue')
+    SPlayingControls: () => import('~/components/shared/ui/playing-controls/index.vue')
+  },
+  data () {
+    return {
+      volumeCurrent: 0,
+      beforeMutedVolume: 0
+    }
   },
   computed: {
-    currentTrack () {
-      return this.$store.getters['playback/currentTrack']
+    ...mapGetters({
+      currentTrack: 'playback/currentTrack',
+      volume: 'playback/volume'
+    })
+  },
+  mounted() {
+    this.volumeCurrent = Math.floor(this.volume * 100)
+  },
+  methods: {
+    handleMoveVolume: debounce(async function(volume) {
+      this.volumeCurrent = volume
+      await this.$playerApi.setVolume(volume)
+    }, 300),
+    toggleOnOfSoundVolume () {
+      if (this.volumeCurrent > 0) {
+        this.beforeMutedVolume = this.volumeCurrent
+        this.handleMoveVolume(0)
+      } else {
+        this.handleMoveVolume(this.beforeMutedVolume);
+      }
     }
   }
 }

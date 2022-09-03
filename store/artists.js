@@ -11,7 +11,7 @@ export const getters = {
     return state.artistRelated.slice(0, 5)
   },
   combinePlayBackUri (state, getters, rootState, rootGetters) {
-    const playBackContext = rootGetters['playback/getPlaybackContext']
+    const playBackContext = rootGetters['playback/getPlayback']
     const uriTracks = state.topTracks.map((track) => track.uri)
     return uriTracks.map((uri) => {
       return [
@@ -57,7 +57,6 @@ export const actions = {
   async getArtistRelatedAction ({commit}, id) {
     try {
       const { artists } = await this.$artistsApi.getArtistRelated(id)
-      console.log(artists)
       commit('setArtistRelated', artists)
     } catch (e) {
       console.error(e)

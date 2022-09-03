@@ -4,6 +4,7 @@ import browseApi from '~/api/browse'
 import artistsApi from '~/api/artists'
 import trackApi from '~/api/track'
 import albumsApi from '~/api/albums'
+import searchApi from '~/api/search'
 
 export default {
   userApi,
@@ -11,5 +12,6 @@ export default {
   browseApi,
   artistsApi,
   trackApi,
-  albumsApi
+  albumsApi,
+  searchApi
 }

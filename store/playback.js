@@ -3,8 +3,6 @@ import { StringUtil } from '~/utils/string-util'
 
 export const state = () => ({
   deviceId: '',
-  playbackData: {},
-  playbackContext: {},
   playback: {},
   volume: 0
 })
@@ -13,30 +11,23 @@ export const getters = {
   getPlayback(state) {
     return state.playback
   },
-  isPlaying: (state) => state.playback?.is_playing,
-  getPlaybackContext: (state) => state.playbackContext,
-  getTitle (state, getters) {
-    const currentTrack = getters.getPlaybackContext.playback?.track_window?.current_track
-    console.log(currentTrack)
-    if (currentTrack) {
-      return `${currentTrack.name} - ${currentTrack.artists[0]?.name}`
-    }
-    return 'Spotify - Nuxt application'
+  isPlaying: (state) => {
+    return !state.playback?.paused
   },
   currentTrack(state) {
-    const { track_window: trackWindow } = state.playbackData
-    const track = trackWindow?.current_track || ''
+    const { track_window: trackWindow } = state.playback
+    const track = trackWindow?.current_track
     if (!track) {
       return null
     }
     const { album } = track
-    const albumId = StringUtil.getIdFromUri(album.uri)
+    const albumId = StringUtil.getIdFromUri(album?.uri || '')
     const albumUrl = RouteUtil.getAlbumRouteUrl(albumId)
     return {
       ...track,
       albumUrl,
-      artists: track.artists.map((artist) => {
-        const artistId = StringUtil.getIdFromUri(artist.uri)
+      artists: track?.artists?.map((artist) => {
+        const artistId = StringUtil.getIdFromUri(artist.uri || '')
         const artistUrl = RouteUtil.getArtistRouteUrl(artistId)
         return {
           ...artist,
@@ -46,10 +37,10 @@ export const getters = {
     }
   },
   position(state) {
-    return state.playbackData?.position || 0
+    return state.playback?.position || 0
   },
   volume(state) {
-    return state.playbackData.volume || 100
+    return state.volume || 1
   }
 }
 
@@ -57,15 +48,9 @@ export const mutations = {
   setDeviceId(state, payload) {
     state.deviceId = payload
   },
-  setPlaybackData(state, payload) {
-    state.playbackData = payload.data
+  SET_PLAYBACK(state, payload) {
+    state.playback = payload?.data || {}
     state.volume = payload.volume
-  },
-  SET_PLAYBACK(state, playback) {
-    state.playback = playback
-  },
-  SET_PLAYBACK_CONTEXT(state, playback) {
-    state.playbackContext = playback
   }
 }
 
@@ -84,12 +69,14 @@ export const actions = {
       }
     })
   },
-  async initPlayer({ dispatch, rootState, commit, getters }, token) {
-    if (rootState.auth.isLoggedIn) {
-      window.onSpotifyWebPlaybackSDKReady = () => {
-      }
-      return
+  setAppTitle({ dispatch, rootState, commit, getters }, track) {
+    const currentTrack = track.track_window?.current_track;
+    if (currentTrack) {
+      const artistName = currentTrack.artists[0].name || '';
+      document.title = `Nuxt Spotify - ${currentTrack.name} ${artistName ? `- ${artistName}` : ''}`
     }
+  },
+  async initPlayer({ dispatch, rootState, commit, getters }, token) {
     const { Player } = await dispatch('waitForSpotifyWebPlaybackSDKToLoad')
     const player = new Player({
       name: 'Nuxt Spotify',
@@ -127,22 +114,16 @@ export const actions = {
       console.error({ err })
     })
 
-    player.addListener('player_state_changed', (async (playerState) => {
+    player.addListener('player_state_changed', async (playerState) => {
       if (!playerState) {
-        console.log('No player info!.')
+        console.info('[Nuxt Spotify] No player info!');
         return
       }
-      commit('setPlaybackData', { data: playerState, volume: await player.getVolume() })
-      dispatch('setPlaybackContext', playerState)
-      dispatch('setPlayBack')
-      console.log('gggg', getters.getTitle)
-      document.title = getters.getTitle
-    }))
+      dispatch('setAppTitle', playerState)
+      commit('SET_PLAYBACK', { data: playerState, volume: await player.getVolume() })
+    })
 
     await player.connect()
-  },
-  setPlaybackContext({ commit }, context) {
-    commit('SET_PLAYBACK_CONTEXT', context);
   },
   async setPlayBack({ commit }) {
     try {

@@ -1,37 +1,44 @@
 <template>
-  <section class="layout">
-    <div class="layout__container">
-      <s-top-bar />
-      <div class="layout__view">
-        <div class="layout__bg-linear"></div>
-        <transition name="home" mode="out-in">
-          <nuxt />
-        </transition>
+  <div style="height: 100%;">
+    <section class="layout">
+      <div class="layout__container">
+        <s-top-bar />
+        <div class="layout__view">
+          <div class="layout__bg-linear"></div>
+          <div class="layout__inner">
+            <transition name="home" mode="out-in">
+              <nuxt />
+            </transition>
+          </div>
+        </div>
+        <s-nav-bar />
+        <s-now-playing-bar />
       </div>
-      <s-nav-bar />
-      <s-now-playing-bar />
-    </div>
-  </section>
+    </section>
+    <background-overlay v-if="imageUrl" :url="imageUrl" />
+  </div>
 </template>
 <script>
-import SNavBar from '~/components/shared/ui/navbar'
-import STopBar from '~/components/shared/ui/top-bar'
-import SNowPlayingBar from '~/components/shared/molecules/now-playing-bar'
+import { mapGetters } from "vuex";
 
 export default {
   components: {
-    SNavBar,
-    STopBar,
-    SNowPlayingBar
+    SNavBar: () => import('~/components/shared/ui/navbar'),
+    STopBar: () => import('~/components/shared/ui/top-bar'),
+    SNowPlayingBar: () => import('~/components/shared/molecules/now-playing-bar'),
+    BackgroundOverlay: () => import('~/components/shared/ui/background-overlay/index.vue'),
   },
   computed: {
-    visibleStickyTop () {
-      return this.$route.name === 'index' || this.$route.name === 'browse'
+    ...mapGetters({
+      playback: 'playback/currentTrack'
+    }),
+    imageUrl () {
+      return this.playback?.album?.images[0]?.url || ''
     }
   },
-  mounted () {
-    this.initAuth()
-    this.$store.dispatch('playback/initPlayer', this.$store.state.auth.accessToken)
+  async mounted () {
+    await this.initAuth()
+    await this.$store.dispatch('playback/initPlayer', this.$store.state.auth.accessToken)
     this.$nextTick(() => {
       document.querySelector('.layout__view').addEventListener('scroll', this.handleScroll)
     })
